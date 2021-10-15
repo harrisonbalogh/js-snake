@@ -1,3 +1,1 @@
-# JS Snake
-
-Snake in JS!
+# js-snake

@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta
+      http-equiv="cache-control"
+      content="no-cache, must-revalidate, post-check=0, pre-check=0"
+    />
+    <title>Harxer - Super Snake</title>
+    <link rel="stylesheet" type="text/css" href="CSS/base.css" />
+    <link rel="icon" href="images/webIcon@2x.png" />
+  </head>
+
+  <body>
+    <div class="content" id="content">
+    <canvas id="bgCanvas" width="500" height="500"></canvas>
+      <canvas id="fgCanvas" width="500" height="500"></canvas>
+
+      <!-- <div class="side-drawer" id="side-drawer">
+        <p class="drawer-title">World Settings</p>
+
+        <table>
+          <col width="100">
+          <col width="40">
+          <tr>
+            <td class="label"><p>Max Goops</p></td>
+            <td><input class="number" type="text" id="input-max-goops" placeholder="20"></td>
+          </tr>
+          <tr>
+            <td><p>Spawn Rate</p></td>
+            <td><input class="number" type="text" id="input-spawn-rate" placeholder="1"></td>
+          </tr>
+          <tr>
+            <td><p>Max Speed</p></td>
+            <td><input class="number" type="text" id="input-max-speed" placeholder="4"></td>
+          </tr>
+          <tr>
+            <td><p>Turn Rate</p></td>
+            <td><input class="number" type="text" id="input-turn-rate" placeholder="3"></td>
+          </tr>
+        </table>
+
+        <button class="button" id="button-restart" onclick="gameOver">Restart</button>
+
+        <div class="drawer-close-button" id="drawer-close-button"></div>
+      </div> -->
+
+      <div class="menu-items" id="menu-items">
+        <p class="menu-title">goop.RUN</p>
+        <button id="menu-item-play-roam">Play - Roam</button>
+        <button id="menu-item-play-run">Play - Run</button>
+        <button id="menu-item-play-chase">Play - Chase</button>
+        <!-- <button id="menu-item-credits">Credits</button>
+        <button id="menu-item-settings">Settings</button> -->
+      </div>
+
+      <div class="menu-logo" id="menu-logo">
+        <div class="menu-logo-icon"></div>
+        <div class="menu-logo-logo"></div>
+      </div>
+
+      <div class="menu-pause" id="menu-pause">
+        <p>Paused</p>
+        <button id="menu-pause-restart">Restart</button>
+        <button id="menu-pause-menu">Return to menu</button>
+      </div>
+    </div>
+
+    <!-- ==================== SCRIPTS ==================== -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/plugins/CSSPlugin.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/easing/EasePack.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.19.0/TweenLite.min.js"></script>
+    <script src="javascript/geometry.js"></script>
+    <script src="javascript/entities/wisp.js"></script>
+    <script src="javascript/entities/particulate.js"></script>
+    <script src="javascript/world.js"></script>
+  </body>
+</html>

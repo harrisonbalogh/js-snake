@@ -1,0 +1,230 @@
+@charset "UTF-8";
+/* CSS Document */
+
+:root {
+  --color-background: rgb(44, 54, 64);
+  --color-foreground: white;
+  --color-text: rgb(51, 57, 63);
+  --color-tonic: rgb(0, 102, 153);
+  --color-mediant: rgb(0, 119, 180);
+  --color-dominant: rgb(51, 153, 204);
+  --color-accent: rgb(255, 204, 51);
+  --color-accent-backup: rgb(72, 88, 104);
+}
+
+html,
+body {
+  font-family: Arial;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  width: 100%;
+}
+
+/* - - - - - - - - - CONTENT - - - - - - - - - */
+
+.content {
+  background-color: var(--color-foreground);
+  bottom: 0;
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  margin: 0;
+  overflow: hidden;
+  padding: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+canvas {
+  height: 600px;
+  left: 50%;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  top: 100px;
+  transform: translateX(-50%);
+  width: 800px;
+}
+
+.menu-items {
+  display: none;
+  margin: 140px;
+  opacity: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-200%);
+  z-index: 1;
+}
+
+.menu-items .menu-title {
+  border-bottom: 1px solid var(--color-background);
+  color: var(--color-text);
+  font-size: 42px;
+  font-weight: bolder;
+  margin: 0;
+  text-align: center;
+}
+
+.menu-items button {
+  border-radius: 0 6px 6px 6px;
+  border: 1px solid var(--color-background);
+  background-color: var(--color-foreground);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+  margin: 34px 0;
+  padding: 6px;
+  width: 240px;
+}
+.menu-items button:hover {
+  background-color: var(--color-text);
+  color: var(--color-foreground);
+}
+.menu-items button:active {
+  color: var(--color-accent);
+}
+
+.menu-pause {
+  display: none;
+  margin: 300px auto 0 auto;
+  z-index: 1;
+}
+
+.menu-pause p {
+  border-bottom: 1px solid var(--color-background);
+  color: var(--color-text);
+  font-size: 26px;
+  font-weight: bolder;
+  margin: 0;
+  text-align: center;
+}
+
+.menu-pause button {
+  border-radius: 6px;
+  border: 1px solid var(--color-background);
+  background-color: var(--color-foreground);
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  margin: 34px 0;
+  padding: 6px;
+  width: 200px;
+}
+.menu-pause button:hover {
+  background-color: var(--color-text);
+  color: var(--color-foreground);
+}
+.menu-pause button:active {
+  color: var(--color-accent);
+}
+
+.menu-logo {
+  display: inline-block;
+  height: 60px;
+  margin: 360px auto 0 auto;
+  opacity: 0;
+  z-index: 1;
+}
+
+.menu-logo-icon {
+  display: inline-block;
+  background: url(../images/webIcon@2x.png) no-repeat center/contain;
+  height: 50px;
+  margin: auto 0;
+  padding: 2px;
+  width: 50px;
+}
+.menu-logo-logo {
+  display: inline-block;
+  background: url(../images/hxr-logo-active@2x.png) no-repeat center/contain;
+  height: 50px;
+  margin: auto 0;
+  padding: 2px;
+  width: 103px;
+}
+
+.side-drawer {
+  background: rgba(143, 177, 194, 0.80);
+  border-left: 1px solid var(--color-text);
+  height: 100%;
+  position: absolute;
+  right: -201px;
+  text-align: center;
+  width: 200px;
+}
+
+.side-drawer .drawer-title {
+  background-color: rgba(0,0,0,0.2);
+  border-bottom: 1px solid var(--color-text);
+  color: var(--color-text);
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+  padding: 8px 0;
+  text-align: center;
+}
+
+.side-drawer table {
+  border-bottom: 1px solid var(--color-text);
+  margin: 0 auto 10px auto;
+  table-layout: fixed;
+}
+
+.side-drawer table td p {
+  color: var(--color-text);
+  text-align: right;
+}
+
+.side-drawer table input.number {
+  border: 1px solid var(--color-text);
+  border-radius: 6px;
+  margin-left: 5px;
+  text-align: center;
+  width: 30px;
+}
+
+.side-drawer .button {
+  background-color: gray;
+  border: 1px solid var(--color-text);
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 5px auto 0 auto;
+}
+.side-drawer .button:hover {
+  background-color: lightgray;
+}
+.side-drawer .button:active {
+  color: darkgray;
+}
+
+.side-drawer .drawer-close-button {
+  background: url('../images/icon_arrow_left.png') no-repeat center/contain;
+  background-color: rgba(101, 125, 138, 0.8);
+  border: 1px solid var(--color-text);
+  border-radius: 6px 0 0 6px;
+  cursor: pointer;
+  height: 60px;
+  position: absolute;
+  right: 100%;
+  top: 50%;
+  width: 20px;
+}
+.side-drawer .drawer-close-button:hover {
+  background-color: rgba(101, 125, 138, 1);
+}
+.side-drawer .drawer-close-button:active {
+  background-color: rgb(75, 93, 102);
+}
