@@ -302,24 +302,24 @@ function dotProduct(a, b) {
 }
 
 function crossProduct(a, b) {
-	return a.x * b.y - a.y * b.x;
+  return a.x * b.y - a.y * b.x;
 }
 function subtractPoints(point1, point2) {
-	let result = {};
-	result.x = point1.x - point2.x;
-	result.y = point1.y - point2.y;
+  let result = {};
+  result.x = point1.x - point2.x;
+  result.y = point1.y - point2.y;
 
-	return result;
+  return result;
 }
 function allEqual(args) {
-	let firstValue = arguments[0],
-		i;
-	for (i = 1; i < arguments.length; i += 1) {
-		if (arguments[i] != firstValue) {
-			return false;
-		}
-	}
-	return true;
+  let firstValue = arguments[0],
+    i;
+  for (i = 1; i < arguments.length; i += 1) {
+    if (arguments[i] != firstValue) {
+      return false;
+    }
+  }
+  return true;
 }
 
 // Project vector a onto b
