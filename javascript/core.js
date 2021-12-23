@@ -59,15 +59,19 @@ function handleTick(delta) {
   World.updateTick(delta)
 }
 
+// let cameraFollowPrev = {x: 0, y: 0}
 export const CAMERA_STYLE = {
   STATIC: () => {},
   FOLLOW: () => {
-    let xMod = (World.player.position.x - view.width / 2) - view.x
-    let yMod = (World.player.position.y - view.height / 2) - view.y
+    let xTarget = World.player.position.x - view.width / 2
+    let yTarget = World.player.position.y - view.height / 2
+    let xMod = xTarget - view.x
+    let yMod = yTarget - view.y
+    // cameraFollowPrev = {x: World.player.position.x, y: World.player.position.y}
     contentContext.translate(-xMod, -yMod)
-    view.x = World.player.position.x - view.width / 2
-    view.y = World.player.position.y - view.height / 2
-    // todo - accel
+    view.x = xTarget
+    view.y = yTarget
+    // TODO - accel
   },
   PAN: (xMod, yMod) => {
     contentContext.translate(xMod, yMod)

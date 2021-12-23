@@ -26,7 +26,7 @@ export default class Spit extends EntityObject {
       this.removed = true
       return
     }
-    // new Particulate(this.position.x, this.position.y, this.size * 3 / 4, COLOR.ACCENT, Vector.fromMagnitudeAngle(this.velocity.magnitude() / 4, this.velocity.flipped().angle()), 0.5)
+    new Particulate(this.position.x, this.position.y, this.size, COLOR.ACCENT, Vector.fromMagnitudeAngle(this.velocity.magnitude() / 4, this.velocity.flipped().angle()), 0.5)
   }
 
   render(context) {

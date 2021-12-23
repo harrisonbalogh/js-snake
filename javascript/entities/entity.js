@@ -11,6 +11,7 @@ export const STATE = {
 }
 
 export const COLLIDER_FILTER = {
+  NONE: undefined,
   PLAYER: 1,
   BULLET: 2,
   MOB: 4,
@@ -25,13 +26,15 @@ export const COLLIDER_MASK = {
 
 export const MOVE_STATES = [STATE.NONE, STATE.PHASED, STATE.FLEE, STATE.RAGE]
 
-// Todo - remove _entities exposure
+// TODO - remove _entities exposure
+// TODO - make entityCounts dynamically populated
 export let _entities = []
 export const entityCounts = {
   Goop: 0,
   Particulate: 0,
   Spit: 0,
-  Player: 0
+  Player: 0,
+  BgBox: 0
 }
 
 function add(entity) {

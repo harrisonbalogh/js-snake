@@ -43,7 +43,7 @@ export default class Player extends Goop {
         let y = Input.mouseLocation().y - (this.position.y - viewY())
         let x = Input.mouseLocation().x - (this.position.x - viewX())
         let dir = Math.atan2(y, x)
-        Particulate.generate(6, 10, this.position, Vector.fromMagnitudeAngle(6, dir), 4, 1, 1, 1, COLOR.ACCENT)
+        Particulate.generate(10, 40, this.position, Vector.fromMagnitudeAngle(6, dir), 4, 1, 1, 1, COLOR.ACCENT)
         new Spit(this.position.x, this.position.y, Vector.fromMagnitudeAngle(20, dir), 4, COLOR.TONIC)
       }
     }

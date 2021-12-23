@@ -4,6 +4,7 @@ import { CAMERA_STYLE, viewWidth, viewHeight, viewX, viewY, COLOR } from './core
 import Goop from './entities/goop.js'
 import { Segment, Point } from './geometry.js'
 import Input from './input.js'
+import BgBox from './entities/bgBox.js'
 
 import { STATE } from './entities/entity.js'
 
@@ -75,16 +76,16 @@ export const GAME_MODE = {
   DEV: {
     id: 5,
     settings: {
-      maxGoops: 0,
+      maxGoops: 1,
       startSize: 5,
-      spawnRate: 1000,
+      spawnRate: 200,
       sizeVariance: 5
     },
     applyCamera: () => CAMERA_STYLE.FOLLOW(), // .STATIC
-    spawnGoop: () => spawnRoamer(1)
+    spawnGoop: () => spawnDev()
   }
 }
-let gameMode = GAME_MODE.NONE
+let gameMode = GAME_MODE.DEV
 export function getGameMode() {
   return gameMode
 }
@@ -264,6 +265,17 @@ function spawnRoamer(points = 1) {
   return newGoop
 }
 
+function spawnDev() {
+  if (Entity.entityCounts.Goop >= gameMode.settings.maxGoops) { return }
+  let x = Math.floor(Math.random() * viewWidth()) + viewX()
+  let y = Math.floor(Math.random() * viewHeight()) + viewY()
+  let size = player.size + Math.floor(Math.random() * gameMode.settings.sizeVariance)
+  let newGoop = new Goop(x, y, size, COLOR.GREEN, "ROAM", 1)
+  newGoop.accelerationMax = 0.05
+  newGoop.velocityTerminal = 8
+  return newGoop
+}
+
 /**
  * Spawns a goop significantly outside the left viewport border and gives it a
  * random destination on the right side of the viewport.
@@ -345,6 +357,18 @@ function spawnHorde() {
 }
 
 export function init() {
+  let genBoxes = 81
+  let boxSize = 200
+  let padding = 200
+  
+  let sqrt = Math.sqrt(genBoxes)
+  for (let i = 0; i < genBoxes; i++) {
+    let s = boxSize + padding
+    let r = Math.floor(i / sqrt) * s - (sqrt * s) / 2 + s/2
+    let c = (i % sqrt) * s - (sqrt * s) / 2 + s/2
+    new BgBox(r, c, boxSize, 'lightgray')
+  }
+
   player = new Player(0, 0, gameMode.settings.startSize)
   player.state = STATE.PERGATORY
 }
