@@ -3,7 +3,7 @@
 
 :root {
   --color-background: rgb(44, 54, 64);
-  --color-foreground: white;
+  --color-foreground: rgb(255, 255, 255);
   --color-text: rgb(51, 57, 63);
   --color-tonic: rgb(0, 102, 153);
   --color-mediant: rgb(0, 119, 180);
@@ -12,13 +12,28 @@
   --color-accent-backup: rgb(72, 88, 104);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: rgb(255, 255, 255);
+    --color-foreground: rgb(44, 54, 64);
+    --color-text: rgb(255, 255, 255);
+    --color-tonic: rgb(0, 102, 153);
+    --color-mediant: rgb(0, 119, 180);
+    --color-dominant: rgb(51, 153, 204);
+    --color-accent: rgb(255, 204, 51);
+    --color-accent-backup: rgb(72, 88, 104);
+  }
+}
+
 html,
 body {
+  background-color: var(--color-foreground);
   font-family: Arial;
   height: 100%;
   margin: 0;
   overflow: hidden;
   padding: 0;
+  text-align: center;
   width: 100%;
 }
 
@@ -26,30 +41,24 @@ body {
 
 .content {
   background-color: var(--color-foreground);
-  bottom: 0;
-  display: -webkit-box;
-  display: -moz-box;
-  display: -ms-flexbox;
-  display: -webkit-flex;
-  display: flex;
-  margin: 0;
+  display: inline-block;
+  height: 100%;
   overflow: hidden;
+  margin: 0;
   padding: 0;
-  position: fixed;
-  top: 0;
+  position: relative; /* To be able to 'absolute' the canvases */
   width: 100%;
 }
 
 canvas {
-  height: 600px;
-  left: 50%;
+  height: 100%;
+  left: 0;
   overflow: hidden;
   margin: 0;
   padding: 0;
-  position: absolute;
-  top: 100px;
-  transform: translateX(-50%);
-  width: 800px;
+  position: absolute; /* To be able to stack the 2 canvases */
+  top: 0;
+  width: 100%;
 }
 
 .menu-items {
@@ -92,46 +101,65 @@ canvas {
   color: var(--color-accent);
 }
 
-.menu-pause {
+.menu-pause-wrapper {
+  background-color: rgba(255, 255, 255, 0.6);
   display: none;
-  margin: 300px auto 0 auto;
+  height: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
   z-index: 1;
 }
 
+.menu-pause {
+  display: inline-block;
+  margin: 220px auto 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
 .menu-pause p {
-  border-bottom: 1px solid var(--color-background);
+  border-bottom: 3px solid var(--color-background);
   color: var(--color-text);
-  font-size: 26px;
-  font-weight: bolder;
+  font-size: 34px;
   margin: 0;
+  padding-bottom: 4px;
   text-align: center;
 }
 
 .menu-pause button {
-  border-radius: 6px;
-  border: 1px solid var(--color-background);
-  background-color: var(--color-foreground);
+  background: url(../images/icon_reload@2x.png) no-repeat center/contain;
+  background-color: transparent;
+  border-width: 0px;
+  border-radius: 8px;
   color: var(--color-text);
   cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  display: block;
-  margin: 34px 0;
-  padding: 6px;
-  width: 200px;
+  display: inline-block;
+  height: 50px;
+  margin: 6px 0 0 0;
+  padding: 0;
+  width: 50px;
+}
+#menu-pause-restart {
+  background-image: url(../images/icon_reload@2x.png);
+}
+#menu-pause-menu {
+  background-image: url(../images/icon_back@2x.png);
 }
 .menu-pause button:hover {
-  background-color: var(--color-text);
-  color: var(--color-foreground);
+  background-color: lightgray;
 }
 .menu-pause button:active {
-  color: var(--color-accent);
+  background-color: gray;
 }
 
 .menu-logo {
-  display: inline-block;
+  display: none;
   height: 60px;
-  margin: 360px auto 0 auto;
+  margin: 250px auto 0 auto;
   opacity: 0;
   z-index: 1;
 }
@@ -153,78 +181,14 @@ canvas {
   width: 103px;
 }
 
-.side-drawer {
-  background: rgba(143, 177, 194, 0.80);
-  border-left: 1px solid var(--color-text);
-  height: 100%;
-  position: absolute;
-  right: -201px;
-  text-align: center;
-  width: 200px;
-}
-
-.side-drawer .drawer-title {
-  background-color: rgba(0,0,0,0.2);
-  border-bottom: 1px solid var(--color-text);
-  color: var(--color-text);
-  font-size: 20px;
-  font-weight: bold;
-  margin: 0;
-  padding: 8px 0;
-  text-align: center;
-}
-
-.side-drawer table {
-  border-bottom: 1px solid var(--color-text);
-  margin: 0 auto 10px auto;
-  table-layout: fixed;
-}
-
-.side-drawer table td p {
-  color: var(--color-text);
-  text-align: right;
-}
-
-.side-drawer table input.number {
-  border: 1px solid var(--color-text);
-  border-radius: 6px;
-  margin-left: 5px;
-  text-align: center;
-  width: 30px;
-}
-
-.side-drawer .button {
-  background-color: gray;
-  border: 1px solid var(--color-text);
-  border-radius: 6px;
-  color: white;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  margin: 5px auto 0 auto;
-}
-.side-drawer .button:hover {
-  background-color: lightgray;
-}
-.side-drawer .button:active {
-  color: darkgray;
-}
-
-.side-drawer .drawer-close-button {
-  background: url('../images/icon_arrow_left.png') no-repeat center/contain;
-  background-color: rgba(101, 125, 138, 0.8);
-  border: 1px solid var(--color-text);
-  border-radius: 6px 0 0 6px;
-  cursor: pointer;
-  height: 60px;
-  position: absolute;
-  right: 100%;
-  top: 50%;
-  width: 20px;
-}
-.side-drawer .drawer-close-button:hover {
-  background-color: rgba(101, 125, 138, 1);
-}
-.side-drawer .drawer-close-button:active {
-  background-color: rgb(75, 93, 102);
-}
+/*
+// document.getElementById('drawer-close-button').onmouseup = e => {
+  // 	let sideDrawer = document.getElementById('side-drawer')
+  // 	if (sideDrawer.style.right == "0px") {
+  // 		sideDrawer.style.right = "-" + sideDrawer.offsetWidth + "px"
+  // 		e.target.style.backgroundImage = "url('./images/icon_arrow_left.png')"
+  // 	} else {
+  // 		sideDrawer.style.right = 0
+  // 		e.target.style.backgroundImage = "url('./images/icon_arrow_right.png')"
+  // 	}
+  // } */

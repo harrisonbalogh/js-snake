@@ -1,0 +1,16 @@
+A. Goop swim motion
+  - Curved turns
+  - slither straight lines
+B.
+C.
+D.
+E. Collision with squares
+F. Displacement from square collision
+G. Levels with blockers
+H. Reform effect
+I. Render clock doesn't run at RENDER_HERTZ
+J. Viewport camera acceleration
+K. Dark Mode images
+L. Upgrade: Auto-fire spits
+M. Upgrade: Vision
+N. Upgrade: Slow

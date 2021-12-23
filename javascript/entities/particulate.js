@@ -1,67 +1,68 @@
-class Particulate {
-  constructor(startX, startY, radius, velDirection, velMagnitude, color, state) {
+import EntityObject from "./entity.js"
+import { Vector } from '../geometry.js'
+import { COLOR } from "../core.js"
 
-    this.radius = radius;
-    this.radiusStarting = radius;
+export default class Particulate extends EntityObject {
+  constructor(x, y, size, color, velocity, friction) {
+    super(x, y)
 
-    this.position = {
-      x: startX,
-      y: startY
-    }
-    this.velocity = {
-      magnitude: velMagnitude,
-      startingMagnitude: velMagnitude,
-      direction: velDirection,
-      ACCELERATION: 0.07,
-    }
-
-    this.color = color;
-
-    this.remove = false;
-
-    this.state = state
+    this.friction.magnitude(friction)
+    this.color = color
+    this.size = size
+    this.startingVelocityMagnitude = velocity.magnitude()
+    this.velocity = velocity
+    this.alpha = 1
   }
 
   update() {
-    this.position.x += this.velocity.magnitude * Math.cos(this.velocity.direction);
-    this.position.y += this.velocity.magnitude * Math.sin(this.velocity.direction);
+    super.update()
 
-    if (this.state == STATE_REFORMING) {
-      this.velocity.magnitude += this.velocity.ACCELERATION;
-      this.radius += 0.1;
-
-      if (this.radius >= 3) {
-        this.remove = true
-      }
-    } else
-    {
-      this.velocity.magnitude -= this.velocity.ACCELERATION;
-      this.radius = this.velocity.magnitude/this.velocity.startingMagnitude * this.radiusStarting;
-      if (this.velocity.magnitude <= 0) {
-        this.remove = true
-      }
+    if (this.velocity.magnitude() < 0.1) {
+      this.alpha -= 0.01
+      this.color = COLOR.setRgbaAlpha(this.color, this.alpha)
+    }
+    if (this.alpha <= 0) {
+      this.removed = true
     }
   }
 
   render(context) {
-    context.fillStyle = this.color;
-    context.beginPath();
-    context.arc(
-      this.position.x,
-      this.position.y,
-      this.radius/2,
-      0, 2 * Math.PI, false
-    );
-    context.fill();
+    super.render(context)
 
-    context.strokeStyle = this.color;
-    context.beginPath();
+    let size = this.size * this.alpha
+
+    context.fillStyle = this.color
+    context.beginPath()
     context.arc(
       this.position.x,
       this.position.y,
-      this.radius,
+      size/2,
       0, 2 * Math.PI, false
     );
-    context.stroke();
+    context.fill()
+  }
+
+  /**
+   * Generates particulate with initial given properties.
+   * @param Number count Number of particulate.
+   * @param Number choke Arc in degrees that particulate may cover.
+   * @param Hash position Hash of {x: Number, y: Number} for the starting position of particulate.
+   * @param Vector velocity Initial speed and direction of particulate before variance.
+   * @param Number size Initial size of particulate before variance.
+   * @param Number angleVariance Angle, in degrees, variance (+/-) between generated particulate.
+   * @param Number speedVariance Speed variance (+/-) between generated particulate.
+   * @param Number sizeVariance Size variance (+/-) between generated particulate.
+   * @param String color Hue of particulate.
+   */
+  static generate(count, choke, position, velocity, size, angleVariance, speedVariance, sizeVariance, color) {
+    choke *= (Math.PI / 180)
+
+    for (let i = 0; i < count; i++) {
+      let pDir = choke * (i/(count-1)) - choke/2 + velocity.angle() + (Math.random() * angleVariance * 2 - angleVariance) / 180 * Math.PI
+      let pVel = Math.max(velocity.magnitude() + Math.random() * speedVariance * 2 - speedVariance, 0.1)
+      let pSize = Math.max(size + Math.random() * sizeVariance * 2 - sizeVariance, 1)
+
+      new Particulate(position.x, position.y, pSize, color, Vector.fromMagnitudeAngle(pVel, pDir), 0.2)
+    }
   }
 }
