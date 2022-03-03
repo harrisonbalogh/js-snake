@@ -106,7 +106,7 @@ class Wisp {
     } else { // heading in straight line.
       this.velocity.direction = this.waypoint.angleToTarget;
     }
-    if (this.state != STATE_RAGE) {
+    if (this.state != STATE_RAGE && this.state != STATE_FLEE) {
       // calc stopping dist needed. need current vel in dir to target
       const velVecToTarget = Wisp.projection(
         Math.cos(this.velocity.direction) * this.velocity.magnitude, Math.sin(this.velocity.direction) * this.velocity.magnitude,
@@ -136,8 +136,8 @@ class Wisp {
       }
     } else {
       // Rage state. Never slow down
-      this.velocity.magnitude += this.velocity.ACCELERATION
-      this.velocity.magnitude = Math.min(this.velocity.magnitude, this.velocity.TERMINAL)
+      // this.velocity.magnitude += this.velocity.ACCELERATION
+      this.velocity.magnitude = Math.min(this.velocity.magnitude + this.velocity.ACCELERATION, this.velocity.TERMINAL)
     }
 
     // Control slither movement.
@@ -259,7 +259,7 @@ class Wisp {
     const x = this.position.x + this.velocity.magnitude * Math.cos(this.velocity.direction + this.flow.angle)
     const y = this.position.y + this.velocity.magnitude * Math.sin(this.velocity.direction + this.flow.angle)
     choke *= (Math.PI / 180) // max choke reached at max speed \/
-    const pChoke = choke + (2 * Math.PI - choke) * (1 - Math.min(this.velocity.magnitude / 2, 1.0))
+    const pChoke = choke + (2 * Math.PI - choke) * (1 - Math.min(this.velocity.magnitude / this.velocity.TERMINAL, 1.0))
     const speedMinimum = 2 // Minimum speed for particle
 
     for (let i = 0; i < count; i++) {
@@ -283,10 +283,10 @@ class Wisp {
     this.velocity.magnitude += 1.5
   }
   /// Particles all directions
-  explode() {
+  explode(dir = 360, speed = 0.8, choke = 0) {
     this.state = STATE_EXPLODED
     this.velocity.magnitude = 1
-    this.generateParticulate(STATE_EXPLODED, 36, 360, 0, 1, 0.8)
+    this.generateParticulate(STATE_EXPLODED, 36, choke, dir, 1, speed)
   }
   // Rejoin particles from explode()
   reform() {

@@ -92,9 +92,9 @@ let GAME_MODE = {
   RUN: {
     id: 2,
     settings: {
-      maxGoops: 50,
+      maxGoops: 30,
       startSize: 9,
-      spawnRate: 250,
+      spawnRate: 1000,
       sizeVariance: 13
     }
   },
@@ -259,9 +259,13 @@ function update(delta) {
   // key control player wisp
   if (player.wisp.state == STATE_NONE || player.wisp.state == STATE_PHASED) {
     // TODO: change 300 to calcuated shortest distance to stop if not pressing key else max distance
+    let stoppingDistance = 300
+    if (input.keyDown[KEYCODE.RIGHT] || input.keyDown[KEYCODE.LEFT] || input.keyDown[KEYCODE.UP] || input.keyDown[KEYCODE.DOWN]) {
+      stoppingDistance = 9999
+    }
     let moveModifier = {
-      x: 300 * input.keyDown[KEYCODE.RIGHT] - 300 * input.keyDown[KEYCODE.LEFT],
-      y: 300 * input.keyDown[KEYCODE.DOWN] - 300 * input.keyDown[KEYCODE.UP]
+      x: stoppingDistance * input.keyDown[KEYCODE.RIGHT] - stoppingDistance * input.keyDown[KEYCODE.LEFT],
+      y: stoppingDistance * input.keyDown[KEYCODE.DOWN] - stoppingDistance * input.keyDown[KEYCODE.UP]
     }
     if (moveModifier.x != 0 || moveModifier.y != 0) {
       player.wisp.waypoint.set(player.wisp.position.x + moveModifier.x, player.wisp.position.y + moveModifier.y);
@@ -277,10 +281,12 @@ function update(delta) {
     view.y = player.wisp.position.y - view.height/2
   } else
   if (gameMode == GAME_MODE.RUN) {
-    let SCROLL_SPEED = 2.25
+    let SCROLL_SPEED = 5.72 // camera is faster for some reason
     let xMod = SCROLL_SPEED
-    bgContext.translate(xMod, 0);
-    view.x -= xMod
+    if (!gameIsOver) {
+      bgContext.translate(xMod, 0);
+      view.x -= xMod
+    }
   } else
   if (gameMode == GAME_MODE.NONE) {
     let SCROLL_SPEED = 1.1
@@ -309,11 +315,20 @@ function update(delta) {
             w--
             continue;
           }
-        } else
-        if (gameMode == GAME_MODE.RUN) {
-          if (wisp.position.x > view.x + view.width + 10 * wisp.size) {
+        }
+      }
+      if (gameMode == GAME_MODE.RUN) {
+        if (gameIsOver) {
+          if (wisp.position.x < view.x || wisp.position.x > view.x + view.width ||
+            wisp.position.y < view.y || wisp.position.y > view.y + view.height) {
             wisps.splice(w, 1)
             w--
+            continue;
+          }
+        }
+        if (wisps.length > 1 && wisp.state != STATE_RAGE) {
+          if (wisp.position.x > wisps[1].position.x - wisps[1].size - wisp.size) {
+            wisp.explode(Math.PI, 5, 60)
             continue;
           }
         }
@@ -361,7 +376,7 @@ function update(delta) {
       let xDist = Math.pow(wisp.position.x - player.wisp.position.x, 2)
       let yDist = Math.pow(wisp.position.y - player.wisp.position.y, 2)
       if (xDist + yDist < Math.pow(wisp.size + player.wisp.size, 2)) {
-        if (player.wisp.size >= wisp.size && gameMode != GAME_MODE.CHASE) {
+        if (player.wisp.size >= wisp.size && wisp.state != STATE_RAGE) {
           if (player.wisp.size == wisp.size) {
             player.wisp.size += 1;
           }
@@ -381,25 +396,30 @@ function update(delta) {
     player.wisp.waypoint.x = player.wisp.position.x - 100
     player.wisp.waypoint.y = player.wisp.position.y
     player.wisp.velocity.direction = Math.PI
-    player.wisp.reform()
+    console.log('reset')
+    if (gameMode != GAME_MODE.RUN) player.wisp.reform()
+    else player.wisp.state = STATE_NONE
     startSpawner()
     gameIsOver = false
 
     if (gameMode == GAME_MODE.RUN) {
       let size = 20
       for (let i = 0; i < Math.floor(view.height/size); i++) {
+        let wSize = size / 2 - 2 + Math.floor((Math.random() * 4 - 2))
         let newWisp = new Wisp(
-          view.x + view.width - size * 2,
-          view.y + i * (size + 1),
-          size / 2,
+          view.x + view.width - wSize * 2 + Math.random() * 6,
+          view.y + i * (size + 1) + Math.floor(Math.random() * 4 - 2),
+          wSize,
           "red",
           bgContext
         );
+        let terminalSpeed = newWisp.velocity.TERMINAL * 1.5
         newWisp.waypoint.x = newWisp.position.x - 99999
         newWisp.waypoint.y = newWisp.position.y
-        newWisp.velocity.TERMINAL = 2.36
-        newWisp.velocity.magnitude = 2.36
+        newWisp.velocity.TERMINAL = terminalSpeed
+        newWisp.velocity.magnitude = terminalSpeed
         newWisp.velocity.direction = Math.PI
+        newWisp.velocity.ACCELERATION = 10
         newWisp.state = STATE_RAGE
         insertSortedWisp(newWisp)
       }
@@ -440,6 +460,10 @@ function gameOver() {
     player.wisp.explode()
   }
   stopSpawner()
+
+  // Reset player speeds
+  player.wisp.velocity.TURN_RATE = 12 * Math.PI / 180
+  player.wisp.velocity.TERMINAL = 3
 
   // All goops flee to closest side of view
   if (gameMode == GAME_MODE.ROAM) {
@@ -498,12 +522,13 @@ function gameOver() {
     }
   } else
   if (gameMode == GAME_MODE.RUN) {
+    player.wisp.waypoint.set(-999999, player.wisp.position.y);
+    player.wisp.velocity.TERMINAL = 6.5
+    player.wisp.velocity.magnitude = 6.5
+    player.wisp.velocity.direction = -Math.PI
     for (let w = 0; w < wisps.length; w++) {
       let wisp = wisps[w]
       if (wisp == player.wisp) continue;
-      wisp.waypoint.x = wisp.position.x + 9999
-      wisp.state = STATE_FLEE
-      wisp.color = "rgba(50, 170, 100, 1)"
     }
   }
 }
@@ -529,11 +554,15 @@ function resumeSpawner() {
  *
  */
 function startSpawner() {
-  if (!canvasRunning) { return }
+  if (!canvasRunning || spawnTimer != null) { return }
+  spawn()
+}
+function spawn() {
   spawnTimer = setTimeout(() => {
+    if (spawnTimer == null) return
     spawnTimerRemaining = gameMode.settings.spawnRate
     spawnTimerStart = Date.now()
-    startSpawner()
+    spawn()
 
     switch(gameMode) {
       case GAME_MODE.NONE:
@@ -592,16 +621,21 @@ function spawnRoamer() {
 
 /**
  * Spawns a goop significantly outside the left viewport border and gives it a
- * random destination on the right side of the viewport.
+ * random destination far to the left. But moves much slower than the rage wisps.
  */
 function spawnRunner() {
+  // 30 is number of rage wisps
+  if (wisps.length >= gameMode.settings.maxGoops + 30 + 1 * (player.wisp != null)) {return}
   let y = Math.floor(Math.random() * view.height) + view.y
   let size = player.wisp.size + Math.floor(Math.random() * gameMode.settings.sizeVariance)
-  let newWisp = new Wisp(view.x - 2 * size, y, size, "rgb(50, 200, 100)", bgContext);
-  newWisp.waypoint.x = view.x + view.width * 2
-  newWisp.waypoint.y = Math.floor(Math.random() * view.height) + view.y
-  newWisp.velocity.magnitude = newWisp.velocity.TERMINAL
+  let newWisp = new Wisp(view.x - 10 * size, y, size, "rgb(50, 200, 100)", bgContext);
+  let terminalSpeed = newWisp.velocity.TERMINAL + Math.random()
+  newWisp.waypoint.x = newWisp.position.x - 99999
+  newWisp.waypoint.y = y
+  newWisp.velocity.magnitude = terminalSpeed
+  newWisp.velocity.TERMINAL = terminalSpeed
   newWisp.state = STATE_FLEE
+  newWisp.velocity.direction = -Math.PI
   insertSortedWisp(newWisp)
   return newWisp
 }
@@ -664,15 +698,23 @@ function insertSortedWisp(newWisp) {
 
   let playerWisp = new Wisp(view.x + view.width/2, view.y + view.height/2, gameMode.settings.startSize, __color_dominant, bgContext);
   playerWisp.destination = playerWisp.position
-  playerWisp.state = STATE_PERGATORY
+  playerWisp.state = STATE_NONE
   playerWisp.velocity.TURN_RATE = 12 * Math.PI / 180
   playerWisp.velocity.TERMINAL = 3
   player.wisp = playerWisp
+
+  player.wisp.waypoint.set(-999999, player.wisp.position.y);
+  player.wisp.velocity.TERMINAL = 6.5
+  player.wisp.velocity.magnitude = 6.5
+  player.wisp.velocity.direction = -Math.PI
+
   wisps.push(playerWisp)
 
   startSpawner()
   update()
   renderBounds()
+
+  if (gameMode != GAME_MODE.NONE) return
 
   // Menu Segues
   let titleElement = document.getElementById("menu-logo")
